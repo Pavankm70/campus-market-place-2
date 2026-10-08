@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/formatters';
-import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder } from '../utils/constants';
+import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder, sanitizeImageUrl } from '../utils/constants';
 import { User, MapPin, Tag, Heart } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
 import { useAuth } from '../context/AuthContext';
@@ -12,11 +12,13 @@ const ProductCard = ({ listing, onRemoveFromWishlist }) => {
   const { isAuthenticated, user } = useAuth();
 
   const fallbackImg = getCategoryPlaceholder(listing.category);
-  const [imgSrc, setImgSrc] = useState(listing.imageUrl || fallbackImg);
+  const initialImg = sanitizeImageUrl(listing.imageUrl) || fallbackImg;
+  const [imgSrc, setImgSrc] = useState(initialImg);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    setImgSrc(listing.imageUrl || getCategoryPlaceholder(listing.category));
+    const clean = sanitizeImageUrl(listing.imageUrl);
+    setImgSrc(clean || getCategoryPlaceholder(listing.category));
   }, [listing.imageUrl, listing.category]);
 
   const isSold = listing.status === 'SOLD';

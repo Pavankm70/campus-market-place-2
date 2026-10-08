@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { listingService } from '../services/listingService';
 import { formatPrice, formatDate } from '../utils/formatters';
-import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder } from '../utils/constants';
+import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder, sanitizeImageUrl } from '../utils/constants';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import {
@@ -209,7 +209,7 @@ const MyListingsPage = () => {
                 >
                   {/* Thumbnail */}
                   <img
-                    src={item.imageUrl || getCategoryPlaceholder(item.category)}
+                    src={sanitizeImageUrl(item.imageUrl) || getCategoryPlaceholder(item.category)}
                     alt={item.title}
                     referrerPolicy="no-referrer"
                     style={{

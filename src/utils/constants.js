@@ -42,6 +42,11 @@ export const getCategoryPlaceholder = (category) => {
 };
 
 // Clean and extract direct image URLs from common web sources
+export const getBackendOrigin = () => {
+  const raw = import.meta.env.VITE_API_URL || (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') ? 'http://localhost:8080' : '');
+  return raw.replace(/\/+$/, '').replace(/\/api$/, '');
+};
+
 export const sanitizeImageUrl = (rawUrl) => {
   if (!rawUrl || typeof rawUrl !== 'string') return '';
   let url = rawUrl.trim();
@@ -51,10 +56,22 @@ export const sanitizeImageUrl = (rawUrl) => {
     url = url.slice(1, -1).trim();
   }
 
+  // Handle data URLs (base64) and blob URLs directly
+  if (url.startsWith('data:image/') || url.startsWith('blob:')) {
+    return url;
+  }
+
+  const backendOrigin = getBackendOrigin();
+
   // Resolve backend uploaded images relative path to full backend URL
-  if (url.startsWith('/uploads/')) {
-    const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '');
-    return `${apiBase}${url}`;
+  if (url.startsWith('/uploads/') || url.startsWith('uploads/') || url.startsWith('/api/uploads/') || url.startsWith('api/uploads/')) {
+    const cleanPath = url.startsWith('/') ? url : `/${url}`;
+    return backendOrigin ? `${backendOrigin}${cleanPath}` : cleanPath;
+  }
+
+  // If stored in database with localhost:8080/uploads/ but we are in production
+  if (url.includes('localhost:8080/uploads/') && backendOrigin && !backendOrigin.includes('localhost:8080')) {
+    return url.replace(/^https?:\/\/localhost:8080/, backendOrigin);
   }
 
   // Google Image search result page (extract actual target image URL)

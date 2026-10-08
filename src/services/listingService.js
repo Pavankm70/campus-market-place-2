@@ -52,6 +52,7 @@ export const listingService = {
     formData.append('file', file);
     const response = await axiosClient.post('/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 60000,
     });
     return response.data.url;
   },

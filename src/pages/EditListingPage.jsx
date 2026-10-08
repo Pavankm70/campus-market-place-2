@@ -513,7 +513,7 @@ const EditListingPage = () => {
                   }}
                 >
                   <img
-                    src={imagePreviewUrl || formData.imageUrl}
+                    src={imagePreviewUrl || sanitizeImageUrl(formData.imageUrl)}
                     alt="Preview"
                     referrerPolicy="no-referrer"
                     style={{

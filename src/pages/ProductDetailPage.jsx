@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { listingService } from '../services/listingService';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice, formatDate } from '../utils/formatters';
-import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder } from '../utils/constants';
+import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder, sanitizeImageUrl } from '../utils/constants';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import ContactSellerModal from '../components/ContactSellerModal';
@@ -64,7 +64,8 @@ const ProductDetailPage = () => {
     try {
       const data = await listingService.getListingById(id);
       setListing(data);
-      setImgSrc(data.imageUrl || getCategoryPlaceholder(data.category));
+      const cleanImg = sanitizeImageUrl(data.imageUrl);
+      setImgSrc(cleanImg || getCategoryPlaceholder(data.category));
     } catch (err) {
       console.error('Failed to load listing:', err);
       if (err.response && err.response.status === 404) {

@@ -3,7 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { inquiryService } from '../services/inquiryService';
 import { useAuth } from '../context/AuthContext';
 import { formatPrice, formatDate } from '../utils/formatters';
-import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder } from '../utils/constants';
+import { DEFAULT_PLACEHOLDER_IMAGE, getCategoryPlaceholder, sanitizeImageUrl } from '../utils/constants';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {
   MessageSquare,
@@ -636,7 +636,7 @@ const MessagesPage = () => {
                         {/* Avatar / Thumbnail */}
                         <div style={{ position: 'relative', flexShrink: 0 }}>
                           <img
-                            src={c.listingImageUrl || getCategoryPlaceholder(c.listingCategory)}
+                            src={sanitizeImageUrl(c.listingImageUrl) || getCategoryPlaceholder(c.listingCategory)}
                             alt={c.listingTitle}
                             referrerPolicy="no-referrer"
                             style={{
@@ -841,7 +841,7 @@ const MessagesPage = () => {
                       }}
                     >
                       <img
-                        src={activeConv.listingImageUrl || getCategoryPlaceholder(activeConv.listingCategory)}
+                        src={sanitizeImageUrl(activeConv.listingImageUrl) || getCategoryPlaceholder(activeConv.listingCategory)}
                         alt={activeConv.listingTitle}
                         referrerPolicy="no-referrer"
                         style={{
