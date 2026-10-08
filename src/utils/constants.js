@@ -1,0 +1,101 @@
+export const CATEGORIES = [
+  { value: 'ALL', label: 'All Items' },
+  { value: 'BOOKS', label: 'Books' },
+  { value: 'ELECTRONICS', label: 'Electronics' },
+  { value: 'LAB_SUPPLIES', label: 'Lab Supplies' },
+  { value: 'STATIONERY', label: 'Stationery' },
+  { value: 'FURNITURE', label: 'Furniture' },
+  { value: 'CLOTHING', label: 'Clothing' },
+  { value: 'OTHER', label: 'Other' },
+];
+
+export const CONDITIONS = [
+  'Brand New',
+  'Like New',
+  'Very Good',
+  'Good',
+  'Fair / Acceptable',
+];
+
+export const SORT_OPTIONS = [
+  { value: 'newest', label: 'Newest First' },
+  { value: 'price_asc', label: 'Price: Low to High' },
+  { value: 'price_desc', label: 'Price: High to Low' },
+];
+
+export const CATEGORY_PLACEHOLDERS = {
+  BOOKS: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&auto=format&fit=crop&q=80',
+  ELECTRONICS: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&auto=format&fit=crop&q=80',
+  LAB_SUPPLIES: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80',
+  STATIONERY: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop&q=80',
+  FURNITURE: 'https://images.unsplash.com/photo-1580481077195-c3a8a30f71c9?w=800&auto=format&fit=crop&q=80',
+  CLOTHING: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop&q=80',
+  OTHER: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
+};
+
+export const DEFAULT_PLACEHOLDER_IMAGE = CATEGORY_PLACEHOLDERS.BOOKS;
+
+export const getCategoryPlaceholder = (category) => {
+  if (!category) return CATEGORY_PLACEHOLDERS.OTHER;
+  const key = category.toUpperCase();
+  return CATEGORY_PLACEHOLDERS[key] || CATEGORY_PLACEHOLDERS.OTHER;
+};
+
+// Clean and extract direct image URLs from common web sources
+export const sanitizeImageUrl = (rawUrl) => {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  let url = rawUrl.trim();
+
+  // Strip enclosing quotes if copied from code/markup
+  if ((url.startsWith('"') && url.endsWith('"')) || (url.startsWith("'") && url.endsWith("'"))) {
+    url = url.slice(1, -1).trim();
+  }
+
+  // Resolve backend uploaded images relative path to full backend URL
+  if (url.startsWith('/uploads/')) {
+    const apiBase = (import.meta.env.VITE_API_URL || 'http://localhost:8080').replace(/\/+$/, '');
+    return `${apiBase}${url}`;
+  }
+
+  // Google Image search result page (extract actual target image URL)
+  if (url.includes('google.') && (url.includes('imgurl=') || url.includes('imgrefurl='))) {
+    try {
+      const match = url.match(/[?&]imgurl=([^&]+)/);
+      if (match && match[1]) {
+        return decodeURIComponent(match[1]);
+      }
+    } catch {
+      // keep original on parse error
+    }
+  }
+
+  // Google Drive share link -> direct embeddable view URL
+  if (url.includes('drive.google.com') && url.includes('/file/d/')) {
+    const fileIdMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileIdMatch && fileIdMatch[1]) {
+      return `https://drive.google.com/uc?export=view&id=${fileIdMatch[1]}`;
+    }
+  }
+
+  // Dropbox link -> direct raw download URL
+  if (url.includes('dropbox.com')) {
+    if (url.includes('?dl=0')) {
+      return url.replace('?dl=0', '?raw=1');
+    }
+    if (!url.includes('raw=1')) {
+      return url.includes('?') ? `${url}&raw=1` : `${url}?raw=1`;
+    }
+  }
+
+  return url;
+};
+
+// Helpful curated presets sellers can quickly pick for their listings
+export const PRESET_IMAGES = [
+  { label: 'Computer Science & Code', category: 'BOOKS', url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80' },
+  { label: 'Math & Engineering Text', category: 'BOOKS', url: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?w=800&auto=format&fit=crop&q=80' },
+  { label: 'Science / Chemistry Book', category: 'BOOKS', url: 'https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=800&auto=format&fit=crop&q=80' },
+  { label: 'Laptop / Tablet Device', category: 'ELECTRONICS', url: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&auto=format&fit=crop&q=80' },
+  { label: 'Scientific Calculator', category: 'ELECTRONICS', url: 'https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=800&auto=format&fit=crop&q=80' },
+  { label: 'Notebooks & Stationery', category: 'STATIONERY', url: 'https://images.unsplash.com/photo-1583485088034-697b5bc54ccd?w=800&auto=format&fit=crop&q=80' },
+];
