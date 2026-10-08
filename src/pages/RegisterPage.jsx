@@ -346,7 +346,7 @@ const RegisterPage = () => {
 
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-register"
               style={{ width: '100%', marginTop: '0.75rem', padding: '0.9rem', fontSize: '1rem' }}
               disabled={submitting}
             >

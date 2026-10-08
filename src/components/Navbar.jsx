@@ -277,7 +277,7 @@ const Navbar = () => {
               <Link to="/login" className="btn btn-sm btn-outline">
                 <LogIn size={15} /> Login
               </Link>
-              <Link to="/register" className="btn btn-sm btn-primary">
+              <Link to="/register" className="btn btn-sm btn-register">
                 <UserPlus size={15} /> Register
               </Link>
             </div>
@@ -362,7 +362,7 @@ const Navbar = () => {
               <Link to="/login" onClick={closeMenu} className="btn btn-outline" style={{ justifyContent: 'center' }}>
                 <LogIn size={18} /> Login
               </Link>
-              <Link to="/register" onClick={closeMenu} className="btn btn-primary" style={{ justifyContent: 'center' }}>
+              <Link to="/register" onClick={closeMenu} className="btn btn-register" style={{ justifyContent: 'center' }}>
                 <UserPlus size={18} /> Register Account
               </Link>
             </div>
