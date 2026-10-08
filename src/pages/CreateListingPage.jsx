@@ -38,7 +38,7 @@ const CreateListingPage = () => {
     title: '',
     description: '',
     price: '',
-    category: 'BOOKS',
+    category: '',
     imageUrl: '',
     conditionType: 'Good',
     isbn: '',
@@ -113,6 +113,11 @@ const CreateListingPage = () => {
       setImageLoadError(false);
       setImagePreviewUrl('');
     }
+    if (name === 'category' && value !== 'BOOKS') {
+      setBookResults([]);
+      setBookModalOpen(false);
+      setSearchingBook(false);
+    }
     setFormData((prev) => ({ ...prev, [name]: finalVal }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
@@ -155,6 +160,7 @@ const CreateListingPage = () => {
   // Inline Google Books Search handler
   const handleInlineBookSearch = async (e, queryOverride) => {
     if (e && e.preventDefault) e.preventDefault();
+    if (formData.category !== 'BOOKS') return;
     const q = (queryOverride !== undefined ? queryOverride : (bookQuery || formData.title || '')).trim();
     if (!q) {
       setServerError('Please enter a book name or ISBN to search Google Books.');
@@ -279,17 +285,18 @@ const CreateListingPage = () => {
           </p>
         </div>
 
-        {/* Google Books Search & Auto-Fill Feature */}
-        <div
-          style={{
-            backgroundColor: '#f4f4f5',
-            border: '1.5px solid #e4e4e7',
-            borderRadius: '16px',
-            padding: '1.5rem',
-            marginBottom: '2rem',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
-          }}
-        >
+        {/* Google Books Search & Auto-Fill Feature (Only for Books category) */}
+        {formData.category === 'BOOKS' && (
+          <div
+            style={{
+              backgroundColor: '#f4f4f5',
+              border: '1.5px solid #e4e4e7',
+              borderRadius: '16px',
+              padding: '1.5rem',
+              marginBottom: '2rem',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+            }}
+          >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.5rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
               <div
@@ -543,6 +550,7 @@ const CreateListingPage = () => {
             </div>
           )}
         </div>
+        )}
 
         {/* Error Alert */}
         {serverError && (
@@ -581,6 +589,7 @@ const CreateListingPage = () => {
                 className={`form-select ${errors.category ? 'has-error' : ''}`}
                 required
               >
+                <option value="">Select Category</option>
                 {CATEGORIES.filter((c) => c.value !== 'ALL').map((c) => (
                   <option key={c.value} value={c.value}>
                     {c.label}
@@ -596,7 +605,7 @@ const CreateListingPage = () => {
                 <label className="form-label" htmlFor="title" style={{ margin: 0 }}>
                   Product Title <span className="req">*</span>
                 </label>
-                {formData.title.trim().length > 2 && (
+                {formData.category === 'BOOKS' && formData.title.trim().length > 2 && (
                   <button
                     type="button"
                     onClick={(e) => {
@@ -626,31 +635,37 @@ const CreateListingPage = () => {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="e.g. Clean Code, Introduction to Algorithms, or Physics Volume 1"
+                  placeholder={
+                    formData.category === 'BOOKS'
+                      ? 'e.g. Clean Code, Introduction to Algorithms, or Physics Volume 1'
+                      : 'e.g. Scientific Calculator, Desk Lamp, Lab Coat'
+                  }
                   className={`form-input ${errors.title ? 'has-error' : ''}`}
                   maxLength={150}
                   required
                 />
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    setBookQuery(formData.title);
-                    handleInlineBookSearch(e, formData.title);
-                  }}
-                  disabled={searchingBook || !formData.title.trim()}
-                  className="btn btn-outline"
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    whiteSpace: 'nowrap',
-                    borderColor: '#cbd5e1',
-                  }}
-                  title="Search Google Books for this title"
-                >
-                  {searchingBook ? <Loader2 size={16} className="spin" /> : <Search size={16} />}
-                  <span>Lookup</span>
-                </button>
+                {formData.category === 'BOOKS' && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      setBookQuery(formData.title);
+                      handleInlineBookSearch(e, formData.title);
+                    }}
+                    disabled={searchingBook || !formData.title.trim()}
+                    className="btn btn-outline"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      whiteSpace: 'nowrap',
+                      borderColor: '#cbd5e1',
+                    }}
+                    title="Search Google Books for this title"
+                  >
+                    {searchingBook ? <Loader2 size={16} className="spin" /> : <Search size={16} />}
+                    <span>Lookup</span>
+                  </button>
+                )}
               </div>
               {errors.title && <div className="form-error">{errors.title}</div>}
               <div className="form-hint">{formData.title.length}/150 characters</div>
@@ -1009,11 +1024,13 @@ const CreateListingPage = () => {
       </div>
 
       {/* Book Metadata Lookup Modal (Mandatory External API integration) */}
-      <BookLookupModal
-        isOpen={bookModalOpen}
-        onClose={() => setBookModalOpen(false)}
-        onSelectBook={handleSelectBook}
-      />
+      {formData.category === 'BOOKS' && (
+        <BookLookupModal
+          isOpen={bookModalOpen}
+          onClose={() => setBookModalOpen(false)}
+          onSelectBook={handleSelectBook}
+        />
+      )}
     </div>
   );
 };
