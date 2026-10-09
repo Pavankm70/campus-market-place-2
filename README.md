@@ -328,9 +328,9 @@ Database  -> Aiven MySQL
 
 ## Live Application
 
-Frontend:
+Frontend :
 
-<YOUR-FRONTEND-URL>
+https://campus-market-place-2.onrender.com
 
 Backend:
 
