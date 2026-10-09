@@ -1,3 +1,6 @@
+Note : backend takes time to start please wait 4–5 minutes of first request of login or register
+
+
 # Campus Marketplace - Frontend
 
 Campus Marketplace is a React-based student-to-student marketplace that allows students to discover, buy, and sell items within their campus community.
