@@ -131,6 +131,9 @@ const CreateListingPage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Reset file input value so selecting the same file again triggers onChange
+    e.target.value = '';
+
     // Instant local object URL preview
     const previewObjUrl = URL.createObjectURL(file);
     setImagePreviewUrl(previewObjUrl);

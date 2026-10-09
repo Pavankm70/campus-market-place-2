@@ -104,6 +104,11 @@ export const sanitizeImageUrl = (rawUrl) => {
     }
   }
 
+  // Ensure Cloudinary URLs use secure HTTPS protocol to avoid mixed content blocking
+  if (url.startsWith('http://res.cloudinary.com/')) {
+    return url.replace('http://', 'https://');
+  }
+
   return url;
 };
 
