@@ -202,7 +202,7 @@ const ProductDetailPage = () => {
                   style={{
                     position: 'absolute',
                     top: '16px',
-                    right: '16px',
+                    left: '16px',
                     backgroundColor: '#1e293b',
                     color: 'white',
                     padding: '0.45rem 1.1rem',
