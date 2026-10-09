@@ -1,4 +1,4 @@
-Note : backend takes time to start please wait 4–5 minutes of first request of login or register
+Note : backend takes time to start please wait 4–5 minutes after putting first request of login or register ( it will show unable to connect backend wait for sometime)
 
 
 # Campus Marketplace - Frontend
